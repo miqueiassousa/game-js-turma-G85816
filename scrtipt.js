@@ -51,7 +51,7 @@ function update() {
     if (gameOver) return;
 
     // Aumenta o multiplicador de velocidade a cada 50 pontos
-    if (score > 0 && score % 50 === 0) {
+    if (score > 0 && score % 10 === 0) {
         speedMultiplier *= 1.5;
         score += 1; // Incremento para evitar loop ao atingir o múltiplo de 50
     }
@@ -89,7 +89,7 @@ function update() {
     for (let i = 0; i < coins.length; i++) {
         const coin = coins[i];
         if (checkCollision(mario, coin)) {
-            score += 10;
+            score += 1;
             coins.splice(i, 1); // Remove a moeda coletada
             i--; // Ajusta índice após remoção
         }
@@ -104,7 +104,7 @@ function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Desenha a caixa de jogo
-    ctx.strokeStyle = 'black';
+    ctx.strokeStyle = 'red';
     ctx.strokeRect(gameBox.x, gameBox.y, gameBox.width, gameBox.height);
 
     // Desenha o Mario
@@ -150,9 +150,10 @@ function checkCollision(a, b) {
     );
 }
 
-function addScore() {
-    return score += 1;
-}
+// function addScore() {
+//     return score += 1;
+// }
+
 // Função para criar novos projéteis com direção ao Mario
 function spawnProjectile() {
     const side = Math.floor(Math.random() * 4);
@@ -221,5 +222,5 @@ function gameLoop() {
 // Inicia o jogo
 setInterval(spawnProjectile, 1000); // Cria novos projéteis a cada segundo
 setInterval(spawnCoin, 3000); // Cria novas moedas a cada 3 segundos
-setInterval(addScore, 1000); // Adiciona 1 ponto a cada 1 segundo
+// setInterval(addScore, 1000); // Adiciona 1 ponto a cada 1 segundo
 gameLoop();
