@@ -5,8 +5,8 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 // Carregar o GIF do Mario
-const marioImage = new Image();
-marioImage.src = 'foguete.gif'; // Caminho do GIF do Mario
+// const marioImage = new Image();
+// marioImage.src = 'foguete2.gif'; // Caminho do GIF do Mario
 
 
 let score = 0;
@@ -25,8 +25,8 @@ const gameBox = {
 const mario = {
     x: gameBox.x + gameBox.width / 2 - 25,
     y: gameBox.y + gameBox.height / 2 - 25,
-    width: 100,
-    height: 100,
+    width: 50,
+    height: 50,
     speed: 6,
 };
 
@@ -119,11 +119,11 @@ function draw() {
     ctx.strokeRect(gameBox.x, gameBox.y, gameBox.width, gameBox.height);
 
     // Desenha o Mario
-    // ctx.fillStyle = 'red';
-    // ctx.fillRect(mario.x, mario.y, mario.width, mario.height);
+    ctx.fillStyle = 'red';
+    ctx.fillRect(mario.x, mario.y, mario.width, mario.height);
 
     // Desenha o Mario usando o GIF carregado
-    ctx.drawImage(marioImage, mario.x, mario.y, mario.width, mario.height);
+    // ctx.drawImage(marioImage, mario.x, mario.y, mario.width, mario.height);
 
     // Desenha os projéteis
     ctx.fillStyle = 'purple';
