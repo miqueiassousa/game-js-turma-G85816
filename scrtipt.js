@@ -4,6 +4,11 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+// Carregar o GIF do Mario
+const marioImage = new Image();
+marioImage.src = 'foguete.gif'; // Caminho do GIF do Mario
+
+
 let score = 0;
 let gameOver = false;
 let speedMultiplier = 1; // Multiplicador inicial de velocidade dos projéteis
@@ -20,9 +25,9 @@ const gameBox = {
 const mario = {
     x: gameBox.x + gameBox.width / 2 - 25,
     y: gameBox.y + gameBox.height / 2 - 25,
-    width: 50,
-    height: 50,
-    speed: 5,
+    width: 100,
+    height: 100,
+    speed: 6,
 };
 
 // Lista de projéteis e moedas
@@ -70,8 +75,14 @@ function update() {
         // Verifica colisão com o Mario
         if (checkCollision(mario, projectile)) {
             gameOver = true;
-            alert('Game Over! Sua pontuação: ' + score);
+        if(score >= 2) {
+
+            alert('Game Over! Parabéns ' + nome + ' a sua pontuação foi: ' + score);
             window.location.reload();
+        }else{
+            alert('Game Over! ' + nome + ' a sua pontuação foi: ' + score);
+            window.location.reload();
+        }
         }
 
         // Remove projéteis que saem da tela
@@ -108,8 +119,11 @@ function draw() {
     ctx.strokeRect(gameBox.x, gameBox.y, gameBox.width, gameBox.height);
 
     // Desenha o Mario
-    ctx.fillStyle = 'red';
-    ctx.fillRect(mario.x, mario.y, mario.width, mario.height);
+    // ctx.fillStyle = 'red';
+    // ctx.fillRect(mario.x, mario.y, mario.width, mario.height);
+
+    // Desenha o Mario usando o GIF carregado
+    ctx.drawImage(marioImage, mario.x, mario.y, mario.width, mario.height);
 
     // Desenha os projéteis
     ctx.fillStyle = 'purple';
@@ -220,6 +234,9 @@ function gameLoop() {
 }
 
 // Inicia o jogo
+let nome = prompt('Qual é o seu nome ?');
+console.log(nome);
+
 setInterval(spawnProjectile, 1000); // Cria novos projéteis a cada segundo
 setInterval(spawnCoin, 3000); // Cria novas moedas a cada 3 segundos
 // setInterval(addScore, 1000); // Adiciona 1 ponto a cada 1 segundo
