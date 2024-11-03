@@ -1,13 +1,7 @@
-
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-
-// Carregar o GIF do Mario
-// const marioImage = new Image();
-// marioImage.src = 'foguete2.gif'; // Caminho do GIF do Mario
-
 
 let score = 0;
 let gameOver = false;
@@ -25,10 +19,18 @@ const gameBox = {
 const mario = {
     x: gameBox.x + gameBox.width / 2 - 25,
     y: gameBox.y + gameBox.height / 2 - 25,
-    width: 50,
-    height: 50,
+    width: 100,
+    height: 100,
     speed: 6,
 };
+
+// Adiciona o GIF animado diretamente sobre o canvas
+const marioGif = document.createElement('img');
+marioGif.src = 'foguete2.gif'; // Caminho do GIF
+marioGif.style.position = 'absolute';
+marioGif.style.width = mario.width + 'px';
+marioGif.style.height = mario.height + 'px';
+document.body.appendChild(marioGif);
 
 // Lista de projéteis e moedas
 const projectiles = [];
@@ -55,10 +57,10 @@ document.addEventListener('keyup', (e) => {
 function update() {
     if (gameOver) return;
 
-    // Aumenta o multiplicador de velocidade a cada 50 pontos
+    // Aumenta o multiplicador de velocidade a cada 10 pontos
     if (score > 0 && score % 10 === 0) {
         speedMultiplier *= 1.5;
-        score += 1; // Incremento para evitar loop ao atingir o múltiplo de 50
+        score += 1; // Incremento para evitar loop ao atingir o múltiplo de 10
     }
 
     // Movimento do Mario, limitado à caixa
@@ -66,6 +68,10 @@ function update() {
     if (keys.ArrowLeft && mario.x > gameBox.x) mario.x -= mario.speed;
     if (keys.ArrowDown && mario.y + mario.height < gameBox.y + gameBox.height) mario.y += mario.speed;
     if (keys.ArrowUp && mario.y > gameBox.y) mario.y -= mario.speed;
+
+    // Atualiza a posição do GIF para coincidir com a posição do Mario
+    marioGif.style.left = mario.x + 'px';
+    marioGif.style.top = mario.y + 'px';
 
     // Atualiza posição dos projéteis
     for (let projectile of projectiles) {
@@ -75,23 +81,12 @@ function update() {
         // Verifica colisão com o Mario
         if (checkCollision(mario, projectile)) {
             gameOver = true;
-        if(score >= 2) {
-
-            alert('Game Over! Parabéns ' + nome + ' a sua pontuação foi: ' + score);
+            alert('Game Over! Sua pontuação: ' + score);
             window.location.reload();
-        }else{
-            alert('Game Over! ' + nome + ' a sua pontuação foi: ' + score);
-            window.location.reload();
-        }
         }
 
         // Remove projéteis que saem da tela
-        if (
-            projectile.x < 0 ||
-            projectile.x > canvas.width ||
-            projectile.y < 0 ||
-            projectile.y > canvas.height
-        ) {
+        if (projectile.x < 0 || projectile.x > canvas.width || projectile.y < 0 || projectile.y > canvas.height) {
             projectiles.splice(projectiles.indexOf(projectile), 1);
         }
     }
@@ -117,13 +112,6 @@ function draw() {
     // Desenha a caixa de jogo
     ctx.strokeStyle = 'red';
     ctx.strokeRect(gameBox.x, gameBox.y, gameBox.width, gameBox.height);
-
-    // Desenha o Mario
-    ctx.fillStyle = 'red';
-    ctx.fillRect(mario.x, mario.y, mario.width, mario.height);
-
-    // Desenha o Mario usando o GIF carregado
-    // ctx.drawImage(marioImage, mario.x, mario.y, mario.width, mario.height);
 
     // Desenha os projéteis
     ctx.fillStyle = 'purple';
@@ -164,10 +152,6 @@ function checkCollision(a, b) {
     );
 }
 
-// function addScore() {
-//     return score += 1;
-// }
-
 // Função para criar novos projéteis com direção ao Mario
 function spawnProjectile() {
     const side = Math.floor(Math.random() * 4);
@@ -201,10 +185,7 @@ function spawnProjectile() {
     }
 
     // Calcula a direção para o Mario
-    const angle = Math.atan2(
-        mario.y - projectile.y,
-        mario.x - projectile.x
-    );
+    const angle = Math.atan2(mario.y - projectile.y, mario.x - projectile.x);
     const speed = (Math.random() * 3 + 2) * speedMultiplier; // Ajusta velocidade com o multiplicador
     projectile.speedX = Math.cos(angle) * speed;
     projectile.speedY = Math.sin(angle) * speed;
@@ -215,7 +196,6 @@ function spawnProjectile() {
 // Função para criar moedas dentro da caixa de jogo, limitada a 4 moedas na tela
 function spawnCoin() {
     if (coins.length < 4) {
-        // Limita a criação de moedas a 4
         const coin = {
             x: Math.random() * (gameBox.width - 20) + gameBox.x,
             y: Math.random() * (gameBox.height - 20) + gameBox.y,
@@ -235,9 +215,6 @@ function gameLoop() {
 
 // Inicia o jogo
 let nome = prompt('Qual é o seu nome ?');
-console.log(nome);
-
 setInterval(spawnProjectile, 1000); // Cria novos projéteis a cada segundo
 setInterval(spawnCoin, 3000); // Cria novas moedas a cada 3 segundos
-// setInterval(addScore, 1000); // Adiciona 1 ponto a cada 1 segundo
 gameLoop();
