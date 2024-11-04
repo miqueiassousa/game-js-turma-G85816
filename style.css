@@ -1,12 +1,11 @@
 body {
     margin: 0;
     overflow: hidden;
-    background-color: lightblue;
 }
 
 canvas {
     /* display: block; */
-    background-color: #87ceeb;
+    background-color: black;
 }
 
 .score {
@@ -15,5 +14,5 @@ canvas {
     left: 10px;
     font-size: 30px;
     font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    color: black;
+    color: white;
 }

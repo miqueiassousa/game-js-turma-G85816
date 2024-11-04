@@ -7,22 +7,15 @@ let score = 0;
 let gameOver = false;
 let speedMultiplier = 1; // Multiplicador inicial de velocidade dos projéteis
 
-// Configurações da caixa de jogo
-const gameBox = {
-    x: canvas.width / 4,
-    y: canvas.height / 4,
-    width: canvas.width / 2,
-    height: canvas.height / 2,
-};
-
-// Configurações do Mario dentro da caixa
+// Configurações do Mario (foguete), sem depender da gameBox
 const mario = {
-    x: gameBox.x + gameBox.width / 2 - 25,
-    y: gameBox.y + gameBox.height / 2 - 25,
+    x: canvas.width / 2 - 50, // Centro do canvas
+    y: canvas.height / 2 - 50, // Centro do canvas
     width: 100,
     height: 100,
     speed: 6,
 };
+
 
 // Adiciona o GIF animado diretamente sobre o canvas
 const marioGif = document.createElement('img');
@@ -38,11 +31,24 @@ const coins = [];
 
 // Carregar a imagem da moeda
 const coinImage = new Image();
-coinImage.src = 'meteorito1.png'; // Caminho da imagem da moeda
+coinImage.src = 'senai1.png'; // Caminho da imagem da moeda
 
-// Carregar a imagem do projétil (caso precise)
+// Carregar a imagem do projétil
 const projectileImage = new Image();
 projectileImage.src = 'meteorito.png'; // Caminho da imagem do projétil
+
+// Configurações das estrelas
+const stars = [];
+const NUM_STARS = 100; // Número de estrelas
+
+for (let i = 0; i < NUM_STARS; i++) {
+    stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 2, // Raio aleatório para estrelas
+        speed: Math.random() * 0.5 + 0.1 // Velocidade de movimento lenta
+    });
+}
 
 // Controles de teclas
 let keys = {
@@ -61,21 +67,43 @@ document.addEventListener('keyup', (e) => {
     if (e.code in keys) keys[e.code] = false;
 });
 
+// Função para desenhar o fundo
+function drawBackground() {
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, '#000000'); // Preto no topo
+    gradient.addColorStop(1, '#1E1E50'); // Azul escuro na parte inferior
+
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Desenhar estrelas
+    ctx.fillStyle = 'white';
+    for (const star of stars) {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2); // Desenha as estrelas
+        ctx.fill();
+    }
+}
+
 // Função de atualização do jogo
 function update() {
     if (gameOver) return;
 
-    // Aumenta o multiplicador de velocidade a cada 10 pontos
-    if (score > 0 && score % 10 === 0) {
-        speedMultiplier *= 1.5;
-        score += 1; // Incremento para evitar loop ao atingir o múltiplo de 10
+    // Atualiza a posição das estrelas
+    for (const star of stars) {
+        star.y += star.speed; // Movimento lento para baixo
+        if (star.y > canvas.height) { // Reposiciona quando sai da tela
+            star.y = 0;
+            star.x = Math.random() * canvas.width; // Nova posição horizontal
+        }
     }
 
-    // Movimento do Mario, limitado à caixa
-    if (keys.ArrowRight && mario.x + mario.width < gameBox.x + gameBox.width) mario.x += mario.speed;
-    if (keys.ArrowLeft && mario.x > gameBox.x) mario.x -= mario.speed;
-    if (keys.ArrowDown && mario.y + mario.height < gameBox.y + gameBox.height) mario.y += mario.speed;
-    if (keys.ArrowUp && mario.y > gameBox.y) mario.y -= mario.speed;
+    // Movimento do Mario, sem limitar à caixa
+    if (keys.ArrowRight && mario.x + mario.width < canvas.width) mario.x += mario.speed;
+    if (keys.ArrowLeft && mario.x > 0) mario.x -= mario.speed;
+    if (keys.ArrowDown && mario.y + mario.height < canvas.height) mario.y += mario.speed;
+    if (keys.ArrowUp && mario.y > 0) mario.y -= mario.speed;
+
 
     // Atualiza a posição do GIF para coincidir com a posição do Mario
     marioGif.style.left = mario.x + 'px';
@@ -117,22 +145,10 @@ function draw() {
     // Limpa o canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Desenha a caixa de jogo
-    ctx.strokeStyle = 'red';
-    ctx.strokeRect(gameBox.x, gameBox.y, gameBox.width, gameBox.height);
+    // Desenhar fundo
+    drawBackground();
 
     // Desenha os projéteis
-    // ctx.fillStyle = 'purple';
-    // for (let projectile of projectiles) {
-    //     ctx.fillRect(
-    //         projectile.x,
-    //         projectile.y,
-    //         projectile.width,
-    //         projectile.height
-    //     );
-    // }
-
-    // Desenha os inimigos
     for (let projectile of projectiles) {
         ctx.drawImage(projectileImage, projectile.x, projectile.y, projectile.width, projectile.height); // Desenha a imagem do projétil
     }
@@ -142,31 +158,18 @@ function draw() {
         ctx.drawImage(coinImage, coin.x, coin.y, coin.width, coin.height); // Desenha a imagem da moeda
     }
 
-    // Desenha as moedas
-    // ctx.fillStyle = 'gold';
-    // for (let coin of coins) {
-    //     ctx.beginPath();
-    //     ctx.arc(
-    //         coin.x + coin.width / 2,
-    //         coin.y + coin.height / 2,
-    //         coin.width / 2,
-    //         0,
-    //         Math.PI * 2
-    //     );
-    //     ctx.fill();
-    // }
-
     // Atualiza pontuação
     document.querySelector('.score').innerText = 'Pontuação: ' + score;
 }
 
-// Função para verificar colisão
+// Função para verificar colisão com uma área de "segurança"
 function checkCollision(a, b) {
+    const collisionOffset = 30; // Área de "segurança" para detecção de colisão
     return (
-        a.x < b.x + b.width &&
-        a.x + a.width > b.x &&
-        a.y < b.y + b.height &&
-        a.y + a.height > b.y
+        a.x < b.x + b.width - collisionOffset &&
+        a.x + a.width - collisionOffset > b.x &&
+        a.y < b.y + b.height - collisionOffset &&
+        a.y + a.height - collisionOffset > b.y
     );
 }
 
@@ -211,18 +214,19 @@ function spawnProjectile() {
     projectiles.push(projectile);
 }
 
-// Função para criar moedas dentro da caixa de jogo, limitada a 4 moedas na tela
+// Função para criar moedas dentro da área do canvas, limitada a 5 moedas na tela
 function spawnCoin() {
-    if (coins.length < 4) {
+    if (coins.length < 5) { // Limita a criação de moedas a 4
         const coin = {
-            x: Math.random() * (gameBox.width - 20) + gameBox.x,
-            y: Math.random() * (gameBox.height - 20) + gameBox.y,
-            width: 20,
-            height: 20,
+            x: Math.random() * (canvas.width - 20), // Altera para usar canvas.width
+            y: Math.random() * (canvas.height - 20), // Altera para usar canvas.height
+            width: 70,
+            height: 30,
         };
         coins.push(coin);
     }
 }
+
 
 // Loop do jogo
 function gameLoop() {
@@ -232,7 +236,6 @@ function gameLoop() {
 }
 
 // Inicia o jogo
-// let nome = prompt('Qual é o seu nome ?');
 setInterval(spawnProjectile, 1000); // Cria novos projéteis a cada segundo
-setInterval(spawnCoin, 3000); // Cria novas moedas a cada 3 segundos
-gameLoop();
+setInterval(spawnCoin, 1000); // Cria novas moedas a cada 3 segundos
+gameLoop(); // Começa o loop do jogo
