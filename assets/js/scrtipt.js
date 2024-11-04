@@ -7,8 +7,8 @@ let score = 0;
 let gameOver = false;
 let speedMultiplier = 1; // Multiplicador inicial de velocidade dos projéteis
 
-// Configurações do Mario (foguete), sem depender da gameBox
-const mario = {
+// Configurações do foguete (foguete), sem depender da gameBox
+const foguete = {
     x: canvas.width / 2 - 50, // Centro do canvas
     y: canvas.height / 2 - 50, // Centro do canvas
     width: 100,
@@ -18,12 +18,12 @@ const mario = {
 
 
 // Adiciona o GIF animado diretamente sobre o canvas
-const marioGif = document.createElement('img');
-marioGif.src = 'assets/imgs/foguete2.gif'; // Caminho do GIF
-marioGif.style.position = 'absolute';
-marioGif.style.width = mario.width + 'px';
-marioGif.style.height = mario.height + 'px';
-document.body.appendChild(marioGif);
+const fogueteGif = document.createElement('img');
+fogueteGif.src = 'assets/imgs/foguete2.gif'; // Caminho do GIF
+fogueteGif.style.position = 'absolute';
+fogueteGif.style.width = foguete.width + 'px';
+fogueteGif.style.height = foguete.height + 'px';
+document.body.appendChild(fogueteGif);
 
 // Lista de projéteis e moedas
 const projectiles = [];
@@ -154,24 +154,24 @@ function update() {
         }
     }
 
-    // Movimento do Mario, sem limitar à caixa
-    if (keys.ArrowRight && mario.x + mario.width < canvas.width) mario.x += mario.speed;
-    if (keys.ArrowLeft && mario.x > 0) mario.x -= mario.speed;
-    if (keys.ArrowDown && mario.y + mario.height < canvas.height) mario.y += mario.speed;
-    if (keys.ArrowUp && mario.y > 0) mario.y -= mario.speed;
+    // Movimento do foguete, sem limitar à caixa
+    if (keys.ArrowRight && foguete.x + foguete.width < canvas.width) foguete.x += foguete.speed;
+    if (keys.ArrowLeft && foguete.x > 0) foguete.x -= foguete.speed;
+    if (keys.ArrowDown && foguete.y + foguete.height < canvas.height) foguete.y += foguete.speed;
+    if (keys.ArrowUp && foguete.y > 0) foguete.y -= foguete.speed;
 
 
-    // Atualiza a posição do GIF para coincidir com a posição do Mario
-    marioGif.style.left = mario.x + 'px';
-    marioGif.style.top = mario.y + 'px';
+    // Atualiza a posição do GIF para coincidir com a posição do foguete
+    fogueteGif.style.left = foguete.x + 'px';
+    fogueteGif.style.top = foguete.y + 'px';
 
     // Atualiza posição dos projéteis
     for (let projectile of projectiles) {
         projectile.x += projectile.speedX;
         projectile.y += projectile.speedY;
 
-        // Verifica colisão com o Mario
-        if (checkCollision(mario, projectile)) {
+        // Verifica colisão com o foguete
+        if (checkCollision(foguete, projectile)) {
             gameOver = true;
             // alert('Game Over! Sua pontuação: ' + score);
             window.location.reload();
@@ -186,7 +186,7 @@ function update() {
     // Verifica colisão com moedas
     for (let i = 0; i < coins.length; i++) {
         const coin = coins[i];
-        if (checkCollision(mario, coin)) {
+        if (checkCollision(foguete, coin)) {
             score += 1;
             coins.splice(i, 1); // Remove a moeda coletada
             i--; // Ajusta índice após remoção
@@ -229,7 +229,7 @@ function checkCollision(a, b) {
     );
 }
 
-// Função para criar novos projéteis com direção ao Mario
+// Função para criar novos projéteis com direção ao foguete
 function spawnProjectile() {
     const side = Math.floor(Math.random() * 4);
     let projectile = {
@@ -261,8 +261,8 @@ function spawnProjectile() {
             break;
     }
 
-    // Calcula a direção para o Mario
-    const angle = Math.atan2(mario.y - projectile.y, mario.x - projectile.x);
+    // Calcula a direção para o foguete
+    const angle = Math.atan2(foguete.y - projectile.y, foguete.x - projectile.x);
     const speed = (Math.random() * 3 + 2) * speedMultiplier; // Ajusta velocidade com o multiplicador
     projectile.speedX = Math.cos(angle) * speed;
     projectile.speedY = Math.sin(angle) * speed;
