@@ -292,6 +292,31 @@ function gameLoop() {
 }
 
 // Inicia o jogo
+
+
 setInterval(spawnProjectile, 1000); // Cria novos projéteis a cada segundo
 setInterval(spawnCoin, 1000); // Cria novas moedas a cada 3 segundos
-gameLoop(); // Começa o loop do jogo
+
+// Função para solicitar o nome e só começar o jogo com um nome válido
+let iniciarJogo = () => {
+    let meuNome;
+
+    // Repete o prompt enquanto o nome for inválido
+    while (!meuNome || meuNome.trim() === "") {
+        meuNome = prompt("Digite o seu nome para iniciar o jogo:");
+        
+        if (meuNome === null) {
+            alert("É necessário inserir um nome para começar o jogo!");
+        }
+    }
+
+    console.log("Jogo iniciado com o nome:", meuNome);
+    gameLoop(); // Começa o loop do jogo
+};
+
+// Chama a função para iniciar o jogo
+iniciarJogo();
+
+
+
+
