@@ -36,6 +36,14 @@ document.body.appendChild(marioGif);
 const projectiles = [];
 const coins = [];
 
+// Carregar a imagem da moeda
+const coinImage = new Image();
+coinImage.src = 'meteorito1.png'; // Caminho da imagem da moeda
+
+// Carregar a imagem do projétil (caso precise)
+const projectileImage = new Image();
+projectileImage.src = 'meteorito.png'; // Caminho da imagem do projétil
+
 // Controles de teclas
 let keys = {
     ArrowRight: false,
@@ -81,7 +89,7 @@ function update() {
         // Verifica colisão com o Mario
         if (checkCollision(mario, projectile)) {
             gameOver = true;
-            alert('Game Over! Sua pontuação: ' + score);
+            // alert('Game Over! Sua pontuação: ' + score);
             window.location.reload();
         }
 
@@ -114,29 +122,39 @@ function draw() {
     ctx.strokeRect(gameBox.x, gameBox.y, gameBox.width, gameBox.height);
 
     // Desenha os projéteis
-    ctx.fillStyle = 'purple';
+    // ctx.fillStyle = 'purple';
+    // for (let projectile of projectiles) {
+    //     ctx.fillRect(
+    //         projectile.x,
+    //         projectile.y,
+    //         projectile.width,
+    //         projectile.height
+    //     );
+    // }
+
+    // Desenha os inimigos
     for (let projectile of projectiles) {
-        ctx.fillRect(
-            projectile.x,
-            projectile.y,
-            projectile.width,
-            projectile.height
-        );
+        ctx.drawImage(projectileImage, projectile.x, projectile.y, projectile.width, projectile.height); // Desenha a imagem do projétil
     }
 
     // Desenha as moedas
-    ctx.fillStyle = 'gold';
     for (let coin of coins) {
-        ctx.beginPath();
-        ctx.arc(
-            coin.x + coin.width / 2,
-            coin.y + coin.height / 2,
-            coin.width / 2,
-            0,
-            Math.PI * 2
-        );
-        ctx.fill();
+        ctx.drawImage(coinImage, coin.x, coin.y, coin.width, coin.height); // Desenha a imagem da moeda
     }
+
+    // Desenha as moedas
+    // ctx.fillStyle = 'gold';
+    // for (let coin of coins) {
+    //     ctx.beginPath();
+    //     ctx.arc(
+    //         coin.x + coin.width / 2,
+    //         coin.y + coin.height / 2,
+    //         coin.width / 2,
+    //         0,
+    //         Math.PI * 2
+    //     );
+    //     ctx.fill();
+    // }
 
     // Atualiza pontuação
     document.querySelector('.score').innerText = 'Pontuação: ' + score;
@@ -158,8 +176,8 @@ function spawnProjectile() {
     let projectile = {
         x: 0,
         y: 0,
-        width: 10,
-        height: 10,
+        width: 30,
+        height: 30,
         speedX: 0,
         speedY: 0,
     };
@@ -214,7 +232,7 @@ function gameLoop() {
 }
 
 // Inicia o jogo
-let nome = prompt('Qual é o seu nome ?');
+// let nome = prompt('Qual é o seu nome ?');
 setInterval(spawnProjectile, 1000); // Cria novos projéteis a cada segundo
 setInterval(spawnCoin, 3000); // Cria novas moedas a cada 3 segundos
 gameLoop();
