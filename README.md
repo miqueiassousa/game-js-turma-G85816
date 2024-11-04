@@ -1,5 +1,5 @@
 # GAME em JS com HTML5
 
-### Projeto Game em JS desenvolvido pela turma G85816, do 4ª Semestre do curso Técnico de DS do SENAI
+### Game desenvolvido com a colaboração da turma G85816, do 4ª Semestre 2.2024 do curso Técnico de DS do SENAI - Vitória da Conquista - BA
 
 #### Jogo de Desviar - Estilo Undertale

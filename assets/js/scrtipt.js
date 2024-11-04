@@ -19,7 +19,7 @@ const mario = {
 
 // Adiciona o GIF animado diretamente sobre o canvas
 const marioGif = document.createElement('img');
-marioGif.src = 'foguete2.gif'; // Caminho do GIF
+marioGif.src = 'assets/imgs/foguete2.gif'; // Caminho do GIF
 marioGif.style.position = 'absolute';
 marioGif.style.width = mario.width + 'px';
 marioGif.style.height = mario.height + 'px';
@@ -31,11 +31,11 @@ const coins = [];
 
 // Carregar a imagem da moeda
 const coinImage = new Image();
-coinImage.src = 'senai1.png'; // Caminho da imagem da moeda
+coinImage.src = 'assets/imgs/senai1.png'; // Caminho da imagem da moeda
 
 // Carregar a imagem do projétil
 const projectileImage = new Image();
-projectileImage.src = 'meteorito.png'; // Caminho da imagem do projétil
+projectileImage.src = 'assets/imgs/meteorito.png'; // Caminho da imagem do projétil
 
 // Configurações das estrelas
 const stars = [];
@@ -67,12 +67,38 @@ document.addEventListener('keyup', (e) => {
     if (e.code in keys) keys[e.code] = false;
 });
 
-// Função para desenhar o fundo
-function drawBackground() {
-    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    gradient.addColorStop(0, '#000000'); // Preto no topo
-    gradient.addColorStop(1, '#1E1E50'); // Azul escuro na parte inferior
+// Variáveis para controlar a cor de transição e progresso
+let currentGradientStart = '#000000';
+let currentGradientEnd = '#1E1E50';
+let targetGradientStart = '#000000';
+let targetGradientEnd = '#1E1E50';
+let transitionProgress = 0; // Progresso de 0 (início) a 1 (final)
 
+// Função para desenhar o fundo com transição
+function drawBackground() {
+    // Define o gradiente alvo com base na pontuação
+    if (score >= 25) {
+        targetGradientStart = '#B8860B';
+        targetGradientEnd = '#1E1E50';
+    } else if (score >= 15) {
+        targetGradientStart = '#800000';
+        targetGradientEnd = '#1E1E50';
+    } else {
+        targetGradientStart = '#000000';
+        targetGradientEnd = '#1E1E50';
+    }
+
+    // Incrementa o progresso da transição até o máximo de 1
+    transitionProgress = Math.min(transitionProgress + 0.01, 1);
+
+    // Interpola a cor do gradiente para uma transição suave
+    const interpolatedStart = interpolateColor(currentGradientStart, targetGradientStart, transitionProgress);
+    const interpolatedEnd = interpolateColor(currentGradientEnd, targetGradientEnd, transitionProgress);
+
+    // Desenha o gradiente interpolado no fundo
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, interpolatedStart);
+    gradient.addColorStop(1, interpolatedEnd);
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -80,10 +106,40 @@ function drawBackground() {
     ctx.fillStyle = 'white';
     for (const star of stars) {
         ctx.beginPath();
-        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2); // Desenha as estrelas
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
         ctx.fill();
     }
+
+    // Atualiza as cores do gradiente atual quando a transição completa
+    if (transitionProgress >= 1) {
+        currentGradientStart = targetGradientStart;
+        currentGradientEnd = targetGradientEnd;
+        transitionProgress = 0; // Reseta o progresso para a próxima transição
+    }
 }
+
+// Função auxiliar para interpolar entre duas cores hexadecimais
+function interpolateColor(color1, color2, factor) {
+    const c1 = hexToRgb(color1);
+    const c2 = hexToRgb(color2);
+
+    const r = Math.round(c1.r + (c2.r - c1.r) * factor);
+    const g = Math.round(c1.g + (c2.g - c1.g) * factor);
+    const b = Math.round(c1.b + (c2.b - c1.b) * factor);
+
+    return `rgb(${r}, ${g}, ${b})`;
+}
+
+// Função auxiliar para converter hexadecimal em RGB
+function hexToRgb(hex) {
+    const bigint = parseInt(hex.slice(1), 16);
+    return {
+        r: (bigint >> 16) & 255,
+        g: (bigint >> 8) & 255,
+        b: bigint & 255,
+    };
+}
+
 
 // Função de atualização do jogo
 function update() {
