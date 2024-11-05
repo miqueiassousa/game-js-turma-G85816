@@ -173,7 +173,26 @@ function update() {
         // Verifica colisão com o foguete
         if (checkCollision(foguete, projectile)) {
             gameOver = true;
-            // alert('Game Over! Sua pontuação: ' + score);
+            // if(gameOver === true){
+                
+            //     for(let i = 1;i<=3;i++){
+            //         alert(i + 'ª Chance');
+            //         setInterval(spawnProjectile, 1000); // Cria novos projéteis a cada segundo
+            //         setInterval(spawnCoin, 1000); // Cria novas moedas a cada 3 segundos
+            //         gameLoop(); // Começa o loop do jogo
+            //     }
+                
+            //     alert('Game Over! Sua pontuação: ' + score);
+            // }
+            
+            // for(let i =1;i <=3;i++) {
+
+            //     gameLoop(); 
+            //     // window.location.reload();
+            // }
+
+            let chance = 1;
+            alert(chance);
             window.location.reload();
         }
 
@@ -298,24 +317,25 @@ setInterval(spawnProjectile, 1000); // Cria novos projéteis a cada segundo
 setInterval(spawnCoin, 1000); // Cria novas moedas a cada 3 segundos
 
 // Função para solicitar o nome e só começar o jogo com um nome válido
-let iniciarJogo = () => {
-    let meuNome;
+// let iniciarJogo = () => {
+//     let meuNome;
 
-    // Repete o prompt enquanto o nome for inválido
-    while (!meuNome || meuNome.trim() === "") {
-        meuNome = prompt("Digite o seu nome para iniciar o jogo:");
+//     // Repete o prompt enquanto o nome for inválido
+//     while (!meuNome || meuNome.trim() === "") {
+//         meuNome = prompt("Digite o seu nome para iniciar o jogo:");
         
-        if (meuNome === null) {
-            alert("É necessário inserir um nome para começar o jogo!");
-        }
-    }
+//         if (meuNome === null) {
+//             alert("É necessário inserir um nome para começar o jogo!");
+//         }
+//     }
 
-    console.log("Jogo iniciado com o nome:", meuNome);
-    gameLoop(); // Começa o loop do jogo
-};
+//     console.log("Jogo iniciado com o nome:", meuNome);
+//     gameLoop(); // Começa o loop do jogo
+// };
 
 // Chama a função para iniciar o jogo
-iniciarJogo();
+// iniciarJogo();
+gameLoop(); 
 
 
 
