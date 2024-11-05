@@ -5,15 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="assets/css/style.css">
     <title>Jogo de Desviar - Estilo Undertale</title>
-    <style>
-        
-    </style>
 </head>
 <body>
-    <div class="score">Pontuação: 0</div>
+    <div class="score" id="score">Pontuação: 0</div>
     <canvas id="gameCanvas"></canvas>
-    <!-- <div id="placar"></div> -->
-    <!-- <div class="score"></div> -->
+    <div id="placar" style="display: none;"></div> <!-- O placar inicial oculto -->
+    <div id="tentativas" style="position: absolute; top: 40px; left: 10px; color: white; font-size: 20px; z-index: 10;"></div> <!-- Adicionado para tentativas restantes -->
 
 
     <script type="text/javaScript" src="assets/js/script.js"></script>

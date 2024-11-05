@@ -3,7 +3,6 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-let melhorPontuacao = 0; // Variável para armazenar a melhor pontuação
 let score = 0;
 let gameOver = false;
 let speedMultiplier = 1; // Multiplicador inicial de velocidade dos projéteis
@@ -27,16 +26,8 @@ function salvarPontuacao(nome, pontuacao) {
     // Pega o placar existente do localStorage ou inicializa como um array vazio
     let placar = JSON.parse(localStorage.getItem('placar')) || [];
     
-    // Verifica se o jogador já está no placar
-    const jogadorExistente = placar.find(jogador => jogador.nome === nome);
-    
-    if (jogadorExistente) {
-        // Atualiza a pontuação apenas se a nova for maior
-        jogadorExistente.pontuacao = Math.max(jogadorExistente.pontuacao, pontuacao);
-    } else {
-        // Se o jogador não existir no placar, adiciona como novo
-        placar.push({ nome: nome, pontuacao: pontuacao });
-    }
+    // Adiciona o novo jogador e sua pontuação ao placar
+    placar.push({ nome: nome, pontuacao: pontuacao });
     
     // Ordena o placar pela pontuação (do maior para o menor)
     placar.sort((a, b) => b.pontuacao - a.pontuacao);
@@ -47,7 +38,6 @@ function salvarPontuacao(nome, pontuacao) {
     // Salva o placar atualizado no localStorage
     localStorage.setItem('placar', JSON.stringify(placar));
 }
-
 
 // Exibir placar
 function exibirPlacar() {
@@ -68,24 +58,18 @@ function exibirPlacar() {
 // Verificar tentativas
 function verificarTentativas() {
     chancesRestantes--;
-    if (chancesRestantes >= 0) {
-        // Atualiza a melhor pontuação entre todas as tentativas
-        melhorPontuacao = Math.max(melhorPontuacao, score);
-
-        if (chancesRestantes > 0) {
-            alert(`Você tem ${chancesRestantes} tentativas restantes.`);
-            resetarJogo(); // Reseta o jogo para uma nova tentativa
-        } else {
-            // Solicita o nome e salva a melhor pontuação após todas as tentativas
-            solicitarNome();
-            salvarPontuacao(nome, melhorPontuacao); // Salva a melhor pontuação obtida entre as tentativas
-            exibirPlacar();
-            alert("Fim do jogo! Suas tentativas acabaram.");
-            window.location.reload(); // Recarrega o jogo para iniciar novamente
-        }
+    if (chancesRestantes > 0) {
+        alert(`Você tem ${chancesRestantes} tentativas restantes.`);
+        resetarJogo(); // Reseta o jogo para uma nova tentativa
+    } else {
+        // Salva a pontuação e exibe o placar apenas ao final do jogo
+        salvarPontuacao(nome, score); // Salvar a pontuação aqui
+        console.log("Salvando pontuação:", nome, score); // Verifica se está salvando
+        exibirPlacar(); // E então exibe o placar
+        alert("Fim do jogo! Suas tentativas acabaram.");
+        // window.location.reload(); // Evite recarregar a página, pois isso limpa os dados temporários
     }
 }
-
 
 // Resetar jogo
 function resetarJogo() {
@@ -95,16 +79,6 @@ function resetarJogo() {
     coins.length = 0;
     foguete.x = canvas.width / 2 - 50; // Reiniciar posição do foguete
     foguete.y = canvas.height / 2 - 50; // Reiniciar posição do foguete
-
-    // Reinicialize as variáveis de controle das teclas
-    keys.ArrowRight = false;
-    keys.ArrowLeft = false;
-    keys.ArrowUp = false;
-    keys.ArrowDown = false;
-
-    // Reinicie o GIF do foguete para centralizar
-    fogueteGif.style.left = foguete.x + 'px';
-    fogueteGif.style.top = foguete.y + 'px';
 }
 
 // Configurações do foguete (foguete), sem depender da gameBox
@@ -271,8 +245,8 @@ function update() {
             return;
         }
 
-        // Remove projéteis que saem da tela
-        if (projectile.x < 0 || projectile.x > canvas.width || projectile.y < 0 || projectile.y > canvas.height) {
+         // Remove projéteis que saem da tela
+         if (projectile.x < 0 || projectile.x > canvas.width || projectile.y < 0 || projectile.y > canvas.height) {
             projectiles.splice(projectiles.indexOf(projectile), 1);
         }
     }
@@ -399,8 +373,6 @@ setInterval(spawnCoin, 1000); // Cria novas moedas a cada 3 segundos
 console.log("Nome do jogador:", nome);
 console.log("Pontuação:", score);
 console.log("Placar atual:", JSON.parse(localStorage.getItem('placar')));
-console.log(`Tentativas restantes: ${chancesRestantes}, Game Over: ${gameOver}`);
-
 
 // Chama a função para iniciar o jogo
 solicitarNome(); // Solicita o nome do jogador

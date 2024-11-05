@@ -3,10 +3,6 @@ body {
     overflow: hidden;
 }
 
-p {
-    color: white;
-}
-
 canvas {
     /* display: block; */
     background-color: black;
@@ -16,7 +12,23 @@ canvas {
     position: absolute;
     top: 10px;
     left: 10px;
-    font-size: 20px;
-    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     color: white;
+    font-size: 20px;
+    z-index: 10; /* Garante que a pontuação fique acima do canvas */
+}
+
+#placar {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 10; /* Garante que o placar fique acima do canvas */
+}
+
+canvas {
+    background: black; /* Para que o canvas tenha um fundo visível */
+    display: block; /* Remove o espaço em branco em baixo do canvas */
 }
