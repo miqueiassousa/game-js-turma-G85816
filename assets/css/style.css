@@ -3,6 +3,10 @@ body {
     overflow: hidden;
 }
 
+p {
+    color: white;
+}
+
 canvas {
     /* display: block; */
     background-color: black;
