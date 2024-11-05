@@ -182,7 +182,7 @@ function update() {
             //         gameLoop(); // Começa o loop do jogo
             //     }
                 
-            //     alert('Game Over! Sua pontuação: ' + score);
+                alert('Game Over! Sua pontuação: ' + score);
             // }
             
             // for(let i =1;i <=3;i++) {
@@ -191,8 +191,8 @@ function update() {
             //     // window.location.reload();
             // }
 
-            let chance = 1;
-            alert(chance);
+            // let chance = 1;
+            // alert(chance);
             window.location.reload();
         }
 
