@@ -3,44 +3,13 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- <link rel="stylesheet" href="assets/css/style.css"> -->
+    <link rel="stylesheet" href="assets/css/style.css">
     <title>Jogo de Desviar - Estilo Undertale</title>
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden; /* Impede a barra de rolagem */
-            background-color: black; /* Cor de fundo */
-        }
-
-        canvas {
-            display: block; /* Remove espaços em branco ao redor do canvas */
-            background-color: #000; /* Fundo do canvas */
-        }
-
-        .interface {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            color: white; /* Cor do texto */
-            font-family: Arial, sans-serif;
-            z-index: 1; /* Garante que a interface apareça sobre o canvas */
-        }
-
-        #placar {
-            margin-top: 10px;
-            max-height: 200px;
-            overflow-y: auto; /* Permite rolagem caso haja muitos jogadores */
-            width: 200px; /* Largura do placar */
-        }
-    </style>
+    
 </head>
 <body>
     <canvas id="gameCanvas"></canvas>
-    <div class="interface">
-        <div class="score" id="score">Pontuação: 0</div>
-        <div class="tentativas" id="tentativas">Tentativas Restantes: 3</div>
-        <div id="placar"></div>
-    </div>
+    
     <script type="text/javaScript" src="assets/js/script.js"></script>
 </body>
 </html>

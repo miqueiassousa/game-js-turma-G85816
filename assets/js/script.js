@@ -1,8 +1,3 @@
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
 let score = 0;
 let gameOver = false;
 let chancesRestantes = 3;
@@ -33,7 +28,7 @@ function exibirPlacar() {
     const placarElement = document.getElementById('placar');
     placarElement.innerHTML = "<h2>Top 5 Jogadores</h2>";
     placar.forEach((jogador, index) => {
-        placarElement.innerHTML += `<p>${index + 1}. ${jogador.nome}: ${jogador.pontuacao} pontos</p>`;
+        placarElement.innerHTML += '<p>${index + 1}. ${jogador.nome}: ${jogador.pontuacao} pontos</p>';
     });
 }
 
