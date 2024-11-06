@@ -174,12 +174,15 @@ let transitionProgress = 0; // Progresso de 0 (início) a 1 (final)
 // Função para desenhar o fundo com transição
 function drawBackground() {
     // Define o gradiente alvo com base na pontuação
-    if (score >= 25) {
+    if (score >= 15) {
         targetGradientStart = '#B8860B';
         targetGradientEnd = '#1E1E50';
-    } else if (score >= 15) {
+    } else if (score >= 10) {
         targetGradientStart = '#800000';
         targetGradientEnd = '#1E1E50';
+    } else if (score >= 5) {
+        targetGradientStart = '#9389';
+        targetGradientEnd = '#150';
     } else {
         targetGradientStart = '#000000';
         targetGradientEnd = '#1E1E50';
