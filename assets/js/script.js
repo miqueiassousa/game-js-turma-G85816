@@ -6,7 +6,7 @@ canvas.height = window.innerHeight;
 let melhorPontuacao = 0; // Variável para armazenar a melhor pontuação
 let score = 0;
 let gameOver = false;
-let speedMultiplier = 0.5; // Multiplicador inicial de velocidade dos projéteis
+// let speedMultiplier = 0.3; // Multiplicador inicial de velocidade dos projéteis
 
 // Chance e nome do jogador
 let chancesRestantes = 3;
@@ -26,10 +26,10 @@ function solicitarNome() {
 function salvarPontuacao(nome, pontuacao) {
     // Pega o placar existente do localStorage ou inicializa como um array vazio
     let placar = JSON.parse(localStorage.getItem('placar')) || [];
-    
+
     // Verifica se o jogador já está no placar
     const jogadorExistente = placar.find(jogador => jogador.nome === nome);
-    
+
     if (jogadorExistente) {
         // Atualiza a pontuação apenas se a nova for maior
         jogadorExistente.pontuacao = Math.max(jogadorExistente.pontuacao, pontuacao);
@@ -37,13 +37,13 @@ function salvarPontuacao(nome, pontuacao) {
         // Se o jogador não existir no placar, adiciona como novo
         placar.push({ nome: nome, pontuacao: pontuacao });
     }
-    
+
     // Ordena o placar pela pontuação (do maior para o menor)
     placar.sort((a, b) => b.pontuacao - a.pontuacao);
-    
+
     // Mantém apenas os 5 melhores
     placar = placar.slice(0, 10);
-    
+
     // Salva o placar atualizado no localStorage
     localStorage.setItem('placar', JSON.stringify(placar));
 }
@@ -53,15 +53,15 @@ function salvarPontuacao(nome, pontuacao) {
 function exibirPlacar() {
     const placar = JSON.parse(localStorage.getItem('placar')) || [];
     const placarElement = document.getElementById('placar');
-    
+
     // Limpa o conteúdo anterior do placar
     placarElement.innerHTML = "<h2>Top 5 Jogadores</h2>";
-    
+
     // Exibe os jogadores no placar
     placar.forEach((jogador, index) => {
         placarElement.innerHTML += `<p>${index + 1}. ${jogador.nome}: ${jogador.pontuacao} pontos</p>`;
     });
-    
+
     // Certifique-se de que o placar está visível
     placarElement.style.display = "block"; // Faz o placar aparecer, caso esteja oculto
 }
@@ -239,16 +239,80 @@ function hexToRgb(hex) {
         b: bigint & 255,
     };
 }
+
+let speedMultiplier = 0.5; // Valor inicial
+
+// Função para atualizar o multiplicador de velocidade
+function updateSpeedMultiplier() {
+    if (projectiles.length >= 10) {
+        speedMultiplier = 5; // Velocidade mais rápida
+    } else if (projectiles.length >= 10) {
+        speedMultiplier = 2; // Velocidade média
+    } else {
+        speedMultiplier = 0.5; // Velocidade inicial
+    }
+}
+// // Chama a função `updateSpeedMultiplier` apenas quando a pontuação aumenta
+function updateScore() {
+    score += 1;
+    updateSpeedMultiplier();
+    document.getElementById('score').innerText = 'Pontuação: ' + score;
+}
+
+// Função para criar um novo projétil com o multiplicador de velocidade aplicado
+function spawnProjectile() {
+    // const speedX = (Math.random() - 0.5) * 2 * speedMultiplier; // Aplica o multiplicador
+    // const speedY = (Math.random() - 0.5) * 2 * speedMultiplier; // Aplica o multiplicador
+
+    // projectiles.push({
+    //     x: Math.random() * canvas.width,
+    //     y: Math.random() * canvas.height,
+    //     width: 10,
+    //     height: 10,
+    //     speedX: speedX,
+    //     speedY: speedY
+    // });
+
+    const side = Math.floor(Math.random() * 4);
+    let projectile = {
+        x: 0,
+        y: 0,
+        width: 30,
+        height: 30,
+        speedX: 0,
+        speedY: 0,
+        opacity: 1,
+    };
+
+    switch (side) {
+        case 0: projectile.x = 0; projectile.y = Math.random() * canvas.height; break;
+        case 1: projectile.x = canvas.width; projectile.y = Math.random() * canvas.height; break;
+        case 2: projectile.x = Math.random() * canvas.width; projectile.y = 0; break;
+        case 3: projectile.x = Math.random() * canvas.width; projectile.y = canvas.height; break;
+    }
+
+    const angle = Math.atan2(foguete.y - projectile.y, foguete.x - projectile.x);
+    const speed = (Math.random() * 3 + 2) * speedMultiplier; 
+    projectile.speedX = Math.cos(angle) * speed;
+    projectile.speedY = Math.sin(angle) * speed;
+
+    projectiles.push(projectile);
+
+}
+
 // Função de atualização do jogo
 function update() {
     if (gameOver) return;
 
+    // Atualiza o multiplicador de velocidade antes de atualizar os projéteis
+    updateSpeedMultiplier();
+
     // Atualiza a posição das estrelas
     for (const star of stars) {
-        star.y += star.speed; // Movimento lento para baixo
-        if (star.y > canvas.height) { // Reposiciona quando sai da tela
+        star.y += star.speed;
+        if (star.y > canvas.height) {
             star.y = 0;
-            star.x = Math.random() * canvas.width; // Nova posição horizontal
+            star.x = Math.random() * canvas.width;
         }
     }
 
@@ -258,12 +322,13 @@ function update() {
     if (keys.ArrowDown && foguete.y + foguete.height < canvas.height) foguete.y += foguete.speed;
     if (keys.ArrowUp && foguete.y > 0) foguete.y -= foguete.speed;
 
-    // Atualiza a posição do GIF para coincidir com a posição do foguete
     fogueteGif.style.left = foguete.x + 'px';
     fogueteGif.style.top = foguete.y + 'px';
 
+
     // Atualiza posição dos projéteis
-    for (let projectile of projectiles) {
+    for (let i = projectiles.length - 1; i >= 0; i--) {
+        const projectile = projectiles[i];
         projectile.x += projectile.speedX;
         projectile.y += projectile.speedY;
 
@@ -275,29 +340,15 @@ function update() {
         }
 
         // Remove projéteis que saem da tela
-        if (projectile.x < 0 || projectile.x > canvas.width || projectile.y < 0 || projectile.y > canvas.height) {
-            projectiles.splice(projectiles.indexOf(projectile), 1);
+        if (
+            projectile.x + projectile.width < 0 ||
+            projectile.x > canvas.width ||
+            projectile.y + projectile.height < 0 ||
+            projectile.y > canvas.height
+        ) {
+            projectiles.splice(i, 1); // Remove projétil que saiu da tela
         }
     }
-
-        // **Remover projéteis quando houver muitos**
-    if (projectiles.length > 10) { // Limite de 10 projéteis na tela
-        projectiles.splice(0, projectiles.length - 10); // Remove projéteis extras
-    }
-
-    // if (projectiles.length > 10) {
-    //     // Aplica a redução de opacidade aos projéteis extras
-    //     projectiles.forEach((projectile, index) => {
-    //         if (projectiles.length > 10) {
-    //             projectile.opacity -= 0.01; // Reduz a opacidade gradualmente
-    //             if (projectile.opacity <= 0) {
-    //                 // Remove projéteis quando a opacidade atingir zero
-    //                 projectiles.splice(index, 1);
-    //             }
-    //         }
-    //     });
-    // }
-    
 
     // Verifica colisão com moedas
     for (let i = 0; i < coins.length; i++) {
@@ -306,13 +357,16 @@ function update() {
             score += 1;
             coins.splice(i, 1);
             i--;
-            document.getElementById('score').innerText = 'Pontuação: ' + score; // Atualiza a pontuação na tela
+            document.getElementById('score').innerText = 'Pontuação: ' + score;
         }
     }
 
-    // Gera novos projéteis a cada 2 segundos
-    if (Math.random() < 0.03) spawnProjectile();
+    // Limitar o número de projéteis ativos na tela
+    if (projectiles.length < 5) {
+        spawnProjectile();
+    }
 }
+
 
 // Função de desenhar o jogo
 function draw() {
@@ -333,7 +387,7 @@ function draw() {
         ctx.drawImage(projectileImage, projectile.x, projectile.y, projectile.width, projectile.height); // Desenha o projétil
         ctx.globalAlpha = 1; // Restaura a opacidade global para o padrão (totalmente opaco)
     }
-    
+
 
     // Desenha as moedas
     for (let coin of coins) {
@@ -415,6 +469,7 @@ function gameLoop() {
     if (!gameOver) {
         update();
         draw();
+        if (projectiles.length < 5) spawnProjectile();
     }
     requestAnimationFrame(gameLoop);
 }
@@ -422,8 +477,8 @@ function gameLoop() {
 // Inicia o jogo
 
 
-setInterval(spawnProjectile, 2000); // Cria novos projéteis a cada segundo
-setInterval(spawnCoin, 800); // Cria novas moedas a cada 3 segundos
+setInterval(spawnProjectile, 3000); // Cria novos projéteis a cada 3 segundo 
+setInterval(spawnCoin, 1000); // Cria novas moedas a cada 3 segundos
 
 console.log("Nome do jogador:", nome);
 console.log("Pontuação:", score);
