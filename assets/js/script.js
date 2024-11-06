@@ -285,6 +285,20 @@ function update() {
         projectiles.splice(0, projectiles.length - 10); // Remove projéteis extras
     }
 
+    // if (projectiles.length > 10) {
+    //     // Aplica a redução de opacidade aos projéteis extras
+    //     projectiles.forEach((projectile, index) => {
+    //         if (projectiles.length > 10) {
+    //             projectile.opacity -= 0.01; // Reduz a opacidade gradualmente
+    //             if (projectile.opacity <= 0) {
+    //                 // Remove projéteis quando a opacidade atingir zero
+    //                 projectiles.splice(index, 1);
+    //             }
+    //         }
+    //     });
+    // }
+    
+
     // Verifica colisão com moedas
     for (let i = 0; i < coins.length; i++) {
         const coin = coins[i];
@@ -311,9 +325,15 @@ function draw() {
     drawBackground();
 
     // Desenha os projéteis
+    // for (let projectile of projectiles) {
+    //     ctx.drawImage(projectileImage, projectile.x, projectile.y, projectile.width, projectile.height); // Desenha a imagem do projétil
+    // }
     for (let projectile of projectiles) {
-        ctx.drawImage(projectileImage, projectile.x, projectile.y, projectile.width, projectile.height); // Desenha a imagem do projétil
+        ctx.globalAlpha = projectile.opacity; // Define a opacidade do projétil
+        ctx.drawImage(projectileImage, projectile.x, projectile.y, projectile.width, projectile.height); // Desenha o projétil
+        ctx.globalAlpha = 1; // Restaura a opacidade global para o padrão (totalmente opaco)
     }
+    
 
     // Desenha as moedas
     for (let coin of coins) {
@@ -345,6 +365,7 @@ function spawnProjectile() {
         height: 30,
         speedX: 0,
         speedY: 0,
+        opacity: 1,
     };
 
     // Define a posição inicial do projétil em um dos lados da tela
