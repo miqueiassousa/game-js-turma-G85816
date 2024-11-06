@@ -16,5 +16,5 @@ Game Over: O jogo termina quando o jogador colide com um obstáculo.
 Frontend: HTML5, CSS3 e JavaScript
 Outras Ferramentas: localStorage para persistência no navegador
 
-👥 Contribuições
+##👥 Contribuições
 Este jogo foi desenvolvido pelo docente da turma, Miquéias Sousa, em conjunto com os alunos da G85816, como parte do aprendizado em desenvolvimento de sistemas.
