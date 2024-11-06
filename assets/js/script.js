@@ -6,7 +6,7 @@ canvas.height = window.innerHeight;
 let melhorPontuacao = 0; // Variável para armazenar a melhor pontuação
 let score = 0;
 let gameOver = false;
-let speedMultiplier = 1; // Multiplicador inicial de velocidade dos projéteis
+let speedMultiplier = 0.5; // Multiplicador inicial de velocidade dos projéteis
 
 // Chance e nome do jogador
 let chancesRestantes = 3;
@@ -42,7 +42,7 @@ function salvarPontuacao(nome, pontuacao) {
     placar.sort((a, b) => b.pontuacao - a.pontuacao);
     
     // Mantém apenas os 5 melhores
-    placar = placar.slice(0, 5);
+    placar = placar.slice(0, 10);
     
     // Salva o placar atualizado no localStorage
     localStorage.setItem('placar', JSON.stringify(placar));
@@ -277,6 +277,11 @@ function update() {
         }
     }
 
+        // **Remover projéteis quando houver muitos**
+    if (projectiles.length > 10) { // Limite de 10 projéteis na tela
+        projectiles.splice(0, projectiles.length - 10); // Remove projéteis extras
+    }
+
     // Verifica colisão com moedas
     for (let i = 0; i < coins.length; i++) {
         const coin = coins[i];
@@ -289,7 +294,7 @@ function update() {
     }
 
     // Gera novos projéteis a cada 2 segundos
-    if (Math.random() < 0.02) spawnProjectile();
+    if (Math.random() < 0.03) spawnProjectile();
 }
 
 // Função de desenhar o jogo
@@ -329,7 +334,7 @@ function checkCollision(a, b) {
 
 // Função para criar novos projéteis com direção ao foguete
 function spawnProjectile() {
-    const side = Math.floor(Math.random() * 4);
+    const side = Math.floor(Math.random() * 3);
     let projectile = {
         x: 0,
         y: 0,
@@ -393,8 +398,8 @@ function gameLoop() {
 // Inicia o jogo
 
 
-setInterval(spawnProjectile, 1000); // Cria novos projéteis a cada segundo
-setInterval(spawnCoin, 1000); // Cria novas moedas a cada 3 segundos
+setInterval(spawnProjectile, 2000); // Cria novos projéteis a cada segundo
+setInterval(spawnCoin, 800); // Cria novas moedas a cada 3 segundos
 
 console.log("Nome do jogador:", nome);
 console.log("Pontuação:", score);
