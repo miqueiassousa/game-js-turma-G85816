@@ -1,4 +1,4 @@
-Jogo de Desviar - Estilo Undertale
+### Jogo de Desviar - Estilo Undertale
 Game desenvolvido com a colaboração da turma G85816, do 4º Semestre (2.2024) do curso Técnico de Desenvolvimento de Sistemas do SENAI - Vitória da Conquista, BA.
 
 📜 Sobre o Projeto
