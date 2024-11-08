@@ -5,6 +5,17 @@ const mysql = require('mysql2');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const path = require('path');
+
+// Servir arquivos estáticos da pasta "frontend"
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+// Rota para servir o index.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
+});
+
+
 // Configuração do banco de dados MySQL
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
@@ -51,5 +62,5 @@ app.post('/api/cadastro', (req, res) => {
 
 // Iniciar o servidor
 app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
+    console.log(`Servidor rodando na porta ${PORT} http://localhost:3000`);
 });
