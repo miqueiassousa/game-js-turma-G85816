@@ -7,12 +7,80 @@
     <title>Jogo de Desviar - Estilo Undertale</title>
 </head>
 <body>
-    <div class="score" id="score">Pontuação: 0</div>
-    <canvas id="gameCanvas"></canvas>
-    <div id="placar" style="display: none;"></div> <!-- O placar inicial oculto -->
-    <div id="tentativas" style="position: absolute; top: 40px; left: 10px; color: white; font-size: 20px; z-index: 10;"></div> <!-- Adicionado para tentativas restantes -->
+    <!-- Formulário de Cadastro do Jogador -->
+    <div class="form-container" id="formContainer">
+        <h1>Cadastro do Jogador</h1>
+        <form id="cadastroForm">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" placeholder="Primeiro nome" required>
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Email" >
+            
+            <label for="telefone">WhatsApp:</label>
+            <input type="text" id="telefone" name="telefone" >
+            
+            <button type="submit">Iniciar Jogo</button>
+        </form>
+        <p id="mensagem"></p>
+    </div>
 
+    <!-- Elementos do Jogo, inicialmente ocultos -->
+    <div class="score" id="score" style="display: none;">Pontuação: 0</div>
+    <canvas id="gameCanvas" style="display: none;"></canvas>
+    <div id="placar" style="display: none;"></div>
+    <div id="tentativas" style="display: none; position: absolute; top: 40px; left: 10px; color: white; font-size: 20px; z-index: 10;"></div>
 
-    <script type="text/javaScript" src="assets/js/script.js"></script>
+    <script>
+        // Lógica do formulário para capturar dados e redirecionar ao jogo
+        document.getElementById('cadastroForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const telefone = document.getElementById('telefone').value;
+
+            try {
+                const response = await fetch('http://localhost:3000/api/cadastro', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ nome, email, telefone })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('mensagem').innerText = result.message;
+                    
+                    // Armazena os dados no Local Storage
+                    localStorage.setItem('jogador', JSON.stringify({ nome, email, telefone }));
+                    
+                    // Após 1 segundo, oculta o formulário e inicia o jogo
+                    setTimeout(() => {
+                        document.getElementById('formContainer').style.display = 'none';
+                        iniciarJogo();
+                    }, 1000);
+                } else {
+                    document.getElementById('mensagem').innerText = result.error;
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+            }
+        });
+
+        // Função para exibir elementos do jogo e iniciar o script
+        function iniciarJogo() {
+            document.getElementById('score').style.display = 'block';
+            document.getElementById('gameCanvas').style.display = 'block';
+            document.getElementById('tentativas').style.display = 'block';
+
+            // Inicia o jogo chamando o script principal
+            const script = document.createElement('script');
+            script.src = 'assets/js/script.js';
+            document.body.appendChild(script);
+        }
+    </script>
 </body>
 </html>

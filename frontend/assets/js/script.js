@@ -12,13 +12,14 @@ let gameOver = false;
 let chancesRestantes = 3;
 let nome = null;
 
-// Solicitar o nome do jogador
-function solicitarNome() {
-    while (!nome || nome.trim() === "") {
-        nome = prompt("Digite seu nome para salvar sua pontuação:");
-        if (!nome) {
-            alert("Você precisa digitar um nome para continuar!");
-        }
+// // Solicitar o nome do jogador | Obtém o nome do jogador do localStorage
+function carregarNomeJogador() {
+    const jogadorSalvo = JSON.parse(localStorage.getItem('jogador'));
+    if (jogadorSalvo && jogadorSalvo.nome) {
+        nome = jogadorSalvo.nome; // Define o nome a partir do cadastro salvo
+    } else {
+        alert("Por favor, complete o cadastro antes de iniciar o jogo!");
+        solicitarNome(); // Solicita o nome se não estiver salvo
     }
 }
 
@@ -77,15 +78,18 @@ function verificarTentativas() {
             resetarJogo(); // Reseta o jogo para uma nova tentativa
         } else {
             // Solicita o nome e salva a melhor pontuação após todas as tentativas
-            solicitarNome();
             salvarPontuacao(nome, melhorPontuacao); // Salva a melhor pontuação obtida entre as tentativas
-            exibirPlacar();
+            exibirPlacar(); // Exibe o placar atualizado
+
             alert("Fim do jogo! Suas tentativas acabaram.");
-            window.location.reload(); // Recarrega o jogo para iniciar novamente
+            setTimeout(() => {
+                // Redireciona ao formulário após 2 segundos
+                // window.location.href = 'formulario.html';
+                window.location.replace('http://localhost:3000/');
+            }, 3000);  // Atraso para garantir que a pontuação foi salva antes do redirecionamento
         }
     }
 }
-
 
 // Resetar jogo
 function resetarJogo() {
@@ -131,7 +135,8 @@ const coins = [];
 
 // Carregar a imagem da moeda
 const coinImage = new Image();
-coinImage.src = 'assets/imgs/senai1.png'; // Caminho da imagem da moeda
+// coinImage.src = 'assets/imgs/senai1.png'; // Caminho da imagem da moeda
+coinImage.src = 'assets/imgs/meteorito1.png';
 
 // Carregar a imagem do projétil
 const projectileImage = new Image();
@@ -261,18 +266,6 @@ function updateScore() {
 
 // Função para criar um novo projétil com o multiplicador de velocidade aplicado
 function spawnProjectile() {
-    // const speedX = (Math.random() - 0.5) * 2 * speedMultiplier; // Aplica o multiplicador
-    // const speedY = (Math.random() - 0.5) * 2 * speedMultiplier; // Aplica o multiplicador
-
-    // projectiles.push({
-    //     x: Math.random() * canvas.width,
-    //     y: Math.random() * canvas.height,
-    //     width: 10,
-    //     height: 10,
-    //     speedX: speedX,
-    //     speedY: speedY
-    // });
-
     const side = Math.floor(Math.random() * 4);
     let projectile = {
         x: 0,
@@ -378,10 +371,6 @@ function draw() {
     // Desenhar fundo
     drawBackground();
 
-    // Desenha os projéteis
-    // for (let projectile of projectiles) {
-    //     ctx.drawImage(projectileImage, projectile.x, projectile.y, projectile.width, projectile.height); // Desenha a imagem do projétil
-    // }
     for (let projectile of projectiles) {
         ctx.globalAlpha = projectile.opacity; // Define a opacidade do projétil
         ctx.drawImage(projectileImage, projectile.x, projectile.y, projectile.width, projectile.height); // Desenha o projétil
@@ -457,8 +446,10 @@ function spawnCoin() {
         const coin = {
             x: Math.random() * (canvas.width - 20), // Altera para usar canvas.width
             y: Math.random() * (canvas.height - 20), // Altera para usar canvas.height
-            width: 70,
+            width: 30,
             height: 30,
+            // width: 70, // Configuração para iamgem do SENAI
+            // height: 30, //Configuração para imagem do SENAI
         };
         coins.push(coin);
     }
@@ -487,6 +478,7 @@ console.log(`Tentativas restantes: ${chancesRestantes}, Game Over: ${gameOver}`)
 
 
 // Chama a função para iniciar o jogo
-solicitarNome(); // Solicita o nome do jogador
+// solicitarNome(); // Solicita o nome do jogador
+carregarNomeJogador();
 exibirPlacar(); // Exibe placar no início
 gameLoop(); 
