@@ -466,8 +466,6 @@ function gameLoop() {
 }
 
 // Inicia o jogo
-
-
 setInterval(spawnProjectile, 3000); // Cria novos projéteis a cada 3 segundo 
 setInterval(spawnCoin, 1000); // Cria novas moedas a cada 3 segundos
 
